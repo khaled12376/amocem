@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily CO2 Emissions Calculator</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+     <style>
+        :root {
+            --bg-color-1: #e6f3e6;
+            --bg-color-2: #d1e8d1;
+            --bg-color-3: #b3dbb3;
+            --bg-color-4: #8ccc8c;
+        }
+
+        html, body {
+            height: 100%;
+            margin: 0;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        body {
+            background:
+                linear-gradient(45deg, var(--bg-color-1), var(--bg-color-2)),
+                repeating-linear-gradient(
+                    45deg,
+                    transparent,
+                    transparent 20px,
+                    rgba(255,255,255,0.05) 20px,
+                    rgba(255,255,255,0.05) 40px
+                );
+            background-attachment: fixed;
+            touch-action: manipulation;
+        }
+        .background-grid {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+            opacity: 0.3;
+        }
+
+        .background-grid::before,
+        .background-grid::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+        }
+
+        .background-grid::before {
+            background-image:
+                linear-gradient(rgba(76, 175, 80, 0.1) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(76, 175, 80, 0.1) 1px, transparent 1px);
+            background-size: 30px 30px;
+        }
+
+        .container {
+            position: relative;
+            background: rgba(255,255,255,0.9);
+            border-radius: 1rem;
+            box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card {
+            background: rgba(255,255,255,0.8);
+            backdrop-filter: blur(10px);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+        select, input {
+            width: 100%;
+            font-size: 16px;
+            padding: 0.75rem;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23718096' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.5em;
+            border-radius: 0.5rem;
+        }
+        .toggle-wrapper {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+        .toggle {
+            position: relative;
+            width: 3.5rem;
+            height: 2rem;
+            background-color: #cbd5e0;
+            border-radius: 9999px;
+            transition: background-color 0.2s;
+        }
+        .toggle-dot {
+            position: absolute;
+            top: 50%;
+            left: 0.25rem;
+            transform: translateY(-50%);
+            width: 1.5rem;
+            height: 1.5rem;
+            background-color: white;
+            border-radius: 9999px;
+            transition: transform 0.2s;
+        }
+        .toggle-input:checked + .toggle {
+            background-color: #48bb78;
+        }
+        .toggle-input:checked + .toggle .toggle-dot {
+            transform: translate(1.5rem, -50%);
+        }
+        @media (max-width: 640px) {
+            .container {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            select, input, button {
+                min-height: 48px;
+            }
+        }
+        .chart-container {
+            position: relative;
+            height: 300px;
+            width: 100%;
+        }
+        .dynamic-input-group {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        #addFoodBtn, #addWasteBtn {
+            background-color: #48bb78;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            margin-top: 0.5rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="background-grid"></div>
+    <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
+            Daily CO2 Emissions Calculator
+        </h1>
+
+<!--        &lt;!&ndash; Transportation Card &ndash;&gt;-->
+<!--        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">-->
+<!--            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">-->
+<!--                🚗 Transportation-->
+<!--            </h2>-->
+<!--            <div class="space-y-4">-->
+<!--                <div>-->
+<!--                    <label class="block text-gray-700 text-sm font-semibold mb-2">Fuel Type</label>-->
+<!--                    <select id="fuelType" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">-->
+<!--                        <option value="natural_gas">Natural Gas</option>-->
+<!--                        <option value="gasoline">Gasoline (Petrol)</option>-->
+<!--                        <option value="diesel">Diesel</option>-->
+<!--                        <option value="jet_gasoline">Jet Gasoline</option>-->
+<!--                    </select>-->
+<!--                </div>-->
+<!--                <div>-->
+<!--                    <label class="block text-gray-700 text-sm font-semibold mb-2">Average Daily Distance (km)</label>-->
+<!--                    <input type="number" id="distance" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">-->
+<!--                </div>-->
+<!--                <div class="toggle-wrapper">-->
+<!--                    <input type="checkbox" id="carAge" class="toggle-input sr-only">-->
+<!--                    <label for="carAge" class="flex items-center">-->
+<!--                        <div class="toggle mr-3">-->
+<!--                            <div class="toggle-dot"></div>-->
+<!--                        </div>-->
+<!--                        <span class="text-gray-700 text-sm font-semibold">Car made after 2010</span>-->
+<!--                    </label>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+                🚗 Transportation
+            </h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Fuel Type</label>
+                    <select id="fuelType" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                        <option value="natural_gas">Natural Gas</option>
+                        <option value="gasoline">Gasoline (Petrol)</option>
+                        <option value="diesel">Diesel</option>
+                        <option value="jet_gasoline">Jet Gasoline</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Average Daily Distance (km)</label>
+                    <input type="number" id="distance" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div class="toggle-wrapper">
+                    <label class="flex items-center cursor-pointer">
+                        <input type="checkbox" id="carAge" class="sr-only toggle-input" onchange="this.nextElementSibling.classList.toggle('bg-48bb78')">
+                        <div class="toggle mr-3">
+                            <div class="toggle-dot"></div>
+                        </div>
+                        <span class="text-gray-700 text-sm font-semibold">Car made after 2010</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <!-- Home Electricity Card -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+                💡 Home Electricity
+            </h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Monthly Electricity Bill ($)</label>
+                    <input type="number" id="electricityBill" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Number of Household Members</label>
+                    <input type="number" id="householdMembers" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="1" inputmode="numeric" pattern="[0-9]*">
+                </div>
+            </div>
+        </div>
+
+        <!-- Water Usage Card -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+                💧 Water Usage
+            </h2>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Monthly Water Bill ($)</label>
+                    <input type="number" id="waterBill" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">
+                </div>
+                <div>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Number of Household Members</label>
+                    <input type="number" id="waterHouseholdMembers" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="1" inputmode="numeric" pattern="[0-9]*">
+                </div>
+            </div>
+        </div>
+
+        <!-- Food Consumption Card -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+                🍽️ Food Consumption
+            </h2>
+            <div id="foodInputs" class="space-y-4 mb-4">
+                <!-- Dynamically generated food inputs will appear here -->
+            </div>
+            <button id="addFoodBtn" class="w-full">+ Add Food Item</button>
+        </div>
+
+        <!-- Waste Management Card -->
+        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+                🗑️ Waste Management
+            </h2>
+            <div id="wasteInputs" class="space-y-4 mb-4">
+                <!-- Dynamically generated waste inputs will appear here -->
+            </div>
+            <button id="addWasteBtn" class="w-full">+ Add Waste Type</button>
+        </div>
+
+        <button
+            id="calculateButton"
+            onclick="calculateEmissions()"
+            class="w-full text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:opacity-90 transition-colors mb-6"
+            style="background: linear-gradient(to right, #48bb78, #2c7a4b)"
+        >
+            Calculate My Daily Emissions
+        </button>
+
+        <!-- Results Section (Previous results section remains the same) -->
+        <div id="results" class="hidden rounded-xl shadow-lg p-4 md:p-8">
+            <div class="grid md:grid-cols-2 gap-4 md:gap-8">
+                <div class="chart-container">
+                    <h2 class="text-xl md:text-2xl font-bold text-gray-700 mb-4">Your Daily CO2 Breakdown</h2>
+                    <canvas id="emissionsChart"></canvas>
+                </div>
+                <div class="flex flex-col justify-center">
+                    <div id="totalEmissions" class="text-2xl md:text-3xl font-bold text-center text-green-600 mb-4"></div>
+                    <div class="bg-green-50 p-4 rounded-lg text-center">
+                        <p class="text-xs md:text-sm text-gray-600">Your daily emissions contribute to global climate change. Small reductions can make a big difference!</p>
+                    </div>
+                </div>
+            </div>
+            <div id="emissionDetails" class="mt-4 md:mt-6 grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
+                <!-- Detailed emissions will be added here dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Food Input Initialization
+        function initializeFoodInputs() {
+            const foodInputs = document.getElementById('foodInputs');
+            const addFoodBtn = document.getElementById('addFoodBtn');
+            const foodOptions = [
+                { value: 'beef', label: 'Beef', emissions: 27 },
+                { value: 'lamb', label: 'Lamb', emissions: 39 },
+                { value: 'cheese', label: 'Cheese', emissions: 13.5 },
+                { value: 'pork', label: 'Pork', emissions: 12 },
+                { value: 'turkey', label: 'Turkey', emissions: 10.9 },
+                { value: 'chicken', label: 'Chicken', emissions: 6.9 },
+                { value: 'tuna', label: 'Tuna', emissions: 6.1 },
+                { value: 'eggs', label: 'Eggs', emissions: 4.8 },
+                { value: 'potatoes', label: 'Potatoes', emissions: 2.9 },
+                { value: 'rice', label: 'Rice', emissions: 4.5 },
+                { value: 'nuts', label: 'Nuts', emissions: 0.43 },
+                { value: 'vegetables', label: 'Vegetables', emissions: 2 },
+                { value: 'lentils', label: 'Lentils', emissions: 0.9 },
+                { value: 'tofu', label: 'Tofu', emissions: 2 }
+            ];
+
+            function createFoodInput() {
+                const div = document.createElement('div');
+                div.className = 'dynamic-input-group';
+
+                const select = document.createElement('select');
+                select.className = 'food-type p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+
+                foodOptions.forEach(option => {
+                    const optionEl = document.createElement('option');
+                    optionEl.value = option.value;
+                    optionEl.textContent = option.label;
+                    select.appendChild(optionEl);
+                });
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'food-amount p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+                input.placeholder = 'kg';
+                input.min = '0';
+                input.step = '0.1';
+                input.inputMode = 'numeric';
+                input.pattern = '[0-9]*';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '✕';
+                removeBtn.className = 'bg-red-500 text-white p-2 rounded-lg ml-2';
+                removeBtn.onclick = () => div.remove();
+
+                div.appendChild(select);
+                div.appendChild(input);
+                div.appendChild(removeBtn);
+
+                return div;
+            }
+
+            // Initial two food inputs
+            foodInputs.appendChild(createFoodInput());
+            foodInputs.appendChild(createFoodInput());
+
+            // Add Food Button
+            addFoodBtn.addEventListener('click', () => {
+                if (foodInputs.children.length < 6) {
+                    foodInputs.appendChild(createFoodInput());
+                }
+            });
+        }
+
+        // Waste Input Initialization
+        function initializeWasteInputs() {
+            const wasteInputs = document.getElementById('wasteInputs');
+            const addWasteBtn = document.getElementById('addWasteBtn');
+            const wasteOptions = [
+                { value: 'organic', label: 'Organic Waste', emissions: 0.15 },
+                { value: 'paper', label: 'Paper', emissions: 1.7 },
+                { value: 'plastic', label: 'Plastic', emissions: 6 },
+                { value: 'glass', label: 'Glass', emissions: 0.21 },
+                { value: 'metal', label: 'Metal', emissions: 0.39 },
+                { value: 'textiles', label: 'Textiles', emissions: 3.5 },
+                { value: 'food_waste', label: 'Food Waste', emissions: 0.25 },
+                { value: 'yard_waste', label: 'Yard Waste', emissions: 0.13 },
+                { value: 'electronics', label: 'Electronics', emissions: 9 }
+            ];
+
+            function createWasteInput() {
+                const div = document.createElement('div');
+                div.className = 'dynamic-input-group';
+
+                const select = document.createElement('select');
+                select.className = 'waste-type p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+
+                wasteOptions.forEach(option => {
+                    const optionEl = document.createElement('option');
+                    optionEl.value = option.value;
+                    optionEl.textContent = option.label;
+                    select.appendChild(optionEl);
+                });
+
+                const input = document.createElement('input');
+                input.type = 'number';
+                input.className = 'waste-amount p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+                input.placeholder = 'kg';
+                input.min = '0';
+                input.step = '0.1';
+                input.inputMode = 'numeric';
+                input.pattern = '[0-9]*';
+
+                const removeBtn = document.createElement('button');
+                removeBtn.textContent = '✕';
+                removeBtn.className = 'bg-red-500 text-white p-2 rounded-lg ml-2';
+                removeBtn.onclick = () => div.remove();
+
+                div.appendChild(select);
+                div.appendChild(input);
+                div.appendChild(removeBtn);
+
+                return div;
+            }
+
+            // Initial two waste inputs
+            wasteInputs.appendChild(createWasteInput());
+            wasteInputs.appendChild(createWasteInput());
+
+            // Add Waste Button
+            addWasteBtn.addEventListener('click', () => {
+                if (wasteInputs.children.length < 6) {
+                    wasteInputs.appendChild(createWasteInput());
+                }
+            });
+        }
+
+        // Emissions Calculations
+        const emissions = {
+            transport: {
+                natural_gas: 2.6928,
+                gasoline: 2.4,
+                diesel: 2.7,
+                jet_gasoline: 3.101
+            },
+            food: {
+                beef: 27,
+                lamb: 39,
+                cheese: 13.5,
+                pork: 12,
+                turkey: 10.9,
+                chicken: 6.9,
+                tuna: 6.1,
+                eggs: 4.8,
+                potatoes: 2.9,
+                rice: 4.5,
+                nuts: 0.43,
+                vegetables: 2,
+                lentils: 0.9,
+                tofu: 2
+            },
+            waste: {
+                organic: 0.15,
+                paper: 1.7,
+                plastic: 6,
+                glass: 0.21,
+                metal: 0.39,
+                textiles: 3.5,
+                food_waste: 0.25,
+                yard_waste: 0.13,
+                electronics: 9
+            }
+        };
+
+        let chart = null;
+
+        function calculateTransportEmissions() {
+            const fuelType = document.getElementById('fuelType').value;
+            const distance = parseFloat(document.getElementById('distance').value) || 0;
+            const isNewCar = document.getElementById('carAge').checked;
+
+            let transportEmissions = distance * emissions.transport[fuelType];
+            if (!isNewCar) transportEmissions *= 1.2; // 20% more for older cars
+            return transportEmissions;
+        }
+
+        function calculateElectricityEmissions() {
+            const bill = parseFloat(document.getElementById('electricityBill').value) || 0;
+            const members = parseFloat(document.getElementById('householdMembers').value) || 1;
+            return (bill * 0.5) / members;
+        }
+
+        function calculateWaterEmissions() {
+            const bill = parseFloat(document.getElementById('waterBill').value) || 0;
+            const members = parseFloat(document.getElementById('waterHouseholdMembers').value) || 1;
+            return (bill * 0.3) / members;
+        }
+
+        function calculateFoodEmissions() {
+            const foodTypes = document.querySelectorAll('.food-type');
+            const foodAmounts = document.querySelectorAll('.food-amount');
+            let totalFoodEmissions = 0;
+
+            for (let i = 0; i < foodTypes.length; i++) {
+                const type = foodTypes[i].value;
+                const amount = parseFloat(foodAmounts[i].value) || 0;
+                const emissionFactor = emissions.food[type] || 0;
+                totalFoodEmissions += amount * emissionFactor;
+            }
+
+            return totalFoodEmissions;
+        }
+
+        function calculateWasteEmissions() {
+            const wasteTypes = document.querySelectorAll('.waste-type');
+            const wasteAmounts = document.querySelectorAll('.waste-amount');
+            let totalWasteEmissions = 0;
+
+            for (let i = 0; i < wasteTypes.length; i++) {
+                const type = wasteTypes[i].value;
+                const amount = parseFloat(wasteAmounts[i].value) || 0;
+                const emissionFactor = emissions.waste[type] || 0;
+                totalWasteEmissions += amount * emissionFactor;
+            }
+
+            return totalWasteEmissions;
+        }
+
+        // function displayResults(data, total) {
+        //     const results = document.getElementById('results');
+        //     const emissionDetails = document.getElementById('emissionDetails');
+        //     results.classList.remove('hidden');
+        //
+        //     const ctx = document.getElementById('emissionsChart').getContext('2d');
+        //
+        //     if (chart) {
+        //         chart.destroy();
+        //     }
+        //
+        //     chart = new Chart(ctx, {
+        //         type: 'doughnut',
+        //         data: {
+        //             labels: Object.keys(data),
+        //             datasets: [{
+        //                 data: Object.values(data),
+        //                 backgroundColor: [
+        //                     '#FEB2B2', // red
+        //                     '#9AE6B4', // green
+        //                     '#90CDF4', // blue
+        //                     '#FBD38D', // yellow
+        //                     '#E9D8FD'  // purple
+        //                 ]
+        //             }]
+        //         },
+        //         options: {
+        //             responsive: true,
+        //             maintainAspectRatio: false,
+        //             plugins: {
+        //                 legend: {
+        //                     position: 'bottom'
+        //                 }
+        //             }
+        //         }
+        //     });
+        //
+        //     document.getElementById('totalEmissions').textContent =
+        //         `${total.toFixed(2)} kg CO2 per Day`;
+        //
+        //     emissionDetails.innerHTML = Object.entries(data).map(([category, value]) => `
+        //         <div class="bg-gray-100 p-3 md:p-4 rounded-lg text-center">
+        //             <h3 class="font-semibold text-gray-700 mb-1 text-sm">${category}</h3>
+        //             <p class="text-xl md:text-2xl font-bold text-gray-800">${value.toFixed(2)} kg</p>
+        //             <p class="text-xs text-gray-500">Daily Emissions</p>
+        //         </div>
+        //     `).join('');
+        // }
+
+        function calculateEmissions() {
+            const transportEmissions = calculateTransportEmissions();
+            const electricityEmissions = calculateElectricityEmissions();
+            const waterEmissions = calculateWaterEmissions();
+            const foodEmissions = calculateFoodEmissions();
+            const wasteEmissions = calculateWasteEmissions();
+
+            const totalEmissions = transportEmissions + electricityEmissions +
+                                 waterEmissions + foodEmissions + wasteEmissions;
+
+            displayResults({
+                Transport: transportEmissions,
+                Electricity: electricityEmissions,
+                Water: waterEmissions,
+                Food: foodEmissions,
+                Waste: wasteEmissions
+            }, totalEmissions);
+        }
+
+        // Initialize inputs when page loads
+        window.onload = function() {
+            initializeFoodInputs();
+            initializeWasteInputs();
+        }
+        function getEmissionsRating(total) {
+            // Emissions rating based on daily CO2 output
+            if (total < 10) {
+                return { emoji: '🌱', description: 'Eco Champion!' };
+            } else if (total < 20) {
+                return { emoji: '🍃', description: 'Green Living' };
+            } else if (total < 35) {
+                return { emoji: '🌍', description: 'Average Impact' };
+            } else if (total < 50) {
+                return { emoji: '🚨', description: 'High Emissions' };
+            } else {
+                return { emoji: '🔥', description: 'Climate Concern!' };
+            }
+        }
+
+        function displayResults(data, total) {
+                const results = document.getElementById('results');
+                results.classList.remove('hidden');
+
+                const ctx = document.getElementById('emissionsChart').getContext('2d');
+
+                if (chart) {
+                    chart.destroy();
+                }
+
+                // Prepare chart data
+                const labels = Object.keys(data);
+                const values = Object.values(data);
+
+                chart = new Chart(ctx, {
+                    type: 'pie',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            data: values,
+                            backgroundColor: [
+                                '#FEB2B2', // red
+                                '#9AE6B4', // green
+                                '#90CDF4', // blue
+                                '#FBD38D', // yellow
+                                '#E9D8FD'  // purple
+                            ]
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        layout: {
+                            padding: 20 // Add padding to prevent emoji cutoff
+                        },
+                        plugins: {
+                            legend: {
+                                position: 'bottom',
+                                labels: {
+                                    font: {
+                                        size: 12
+                                    }
+                                }
+                            }
+                        }
+                    }
+                });
+
+                const rating = getEmissionsRating(total);
+
+                // Update total emissions display with emoji and rating
+                document.getElementById('totalEmissions').innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <div class="text-6xl mb-2">${rating.emoji}</div>
+                        <div class="text-2xl font-bold text-gray-800">${total.toFixed(2)} kg CO2/Day</div>
+                        <div class="text-lg text-gray-600">${rating.description}</div>
+                    </div>
+                `;
+
+                document.getElementById('emissionDetails').innerHTML = labels.map((label, index) => `
+                    <div class="bg-gray-100 p-3 rounded-lg text-center">
+                        <h3 class="font-semibold text-gray-700 mb-1 text-sm">${label}</h3>
+                        <p class="text-xl font-bold text-gray-800">${values[index].toFixed(2)} kg</p>
+                    </div>
+                `).join('');
+            }
+    </script>
+</body>
+</html>
