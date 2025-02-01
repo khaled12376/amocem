@@ -3,11 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily CO2 Emissions Calculator</title>
+    <title>📱 Monthly CO2 Emissions Calculator</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
      <style>
+         .logo-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 2rem;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 0.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .logo {
+            height: 60px;
+            width: auto;
+        }
+
         :root {
             --bg-color-1: #e6f3e6;
             --bg-color-2: #d1e8d1;
@@ -157,8 +172,13 @@
 <body>
     <div class="background-grid"></div>
     <div class="container mx-auto px-4 py-8 max-w-4xl">
+        <!-- New Logo Container -->
+        <div class="logo-container">
+            <img src="logo1.png" alt="AMOC Green Logo" class="logo">
+            <img src="logo2.png" alt="AMOC Red Logo" class="logo">
+        </div>
         <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
-            Daily CO2 Emissions Calculator
+            📱 Monthly CO2 Emissions Calculator
         </h1>
 
 <!--        &lt;!&ndash; Transportation Card &ndash;&gt;-->
@@ -206,7 +226,7 @@
                     </select>
                 </div>
                 <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Average Daily Distance (km)</label>
+                    <label class="block text-gray-700 text-sm font-semibold mb-2">Average Monthly Distance (km)</label>
                     <input type="number" id="distance" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">
                 </div>
                 <div class="toggle-wrapper">
@@ -603,21 +623,29 @@
             initializeWasteInputs();
         }
         function getEmissionsRating(total) {
-            // Emissions rating based on daily CO2 output
-            if (total < 10) {
-                return { emoji: '🌱', description: 'Eco Champion!' };
-            } else if (total < 20) {
-                return { emoji: '🍃', description: 'Green Living' };
-            } else if (total < 35) {
-                return { emoji: '🌍', description: 'Average Impact' };
-            } else if (total < 50) {
-                return { emoji: '🚨', description: 'High Emissions' };
-            } else {
-                return { emoji: '🔥', description: 'Climate Concern!' };
+                // Adjusted thresholds for monthly values (multiplied by 30)
+                if (total < 300) {
+                    return { emoji: '🌱', description: 'Eco Champion!' };
+                } else if (total < 600) {
+                    return { emoji: '🍃', description: 'Green Living' };
+                } else if (total < 1050) {
+                    return { emoji: '🌍', description: 'Average Impact' };
+                } else if (total < 1500) {
+                    return { emoji: '🚨', description: 'High Emissions' };
+                } else {
+                    return { emoji: '🔥', description: 'Climate Concern!' };
+                }
             }
-        }
 
         function displayResults(data, total) {
+                const monthlyTotal = total * 30; // Convert daily to monthly
+                const monthlyData = {};
+
+                // Convert all data points to monthly values
+                for (let key in data) {
+                    monthlyData[key] = data[key] * 30;
+                }
+
                 const results = document.getElementById('results');
                 results.classList.remove('hidden');
 
@@ -627,22 +655,19 @@
                     chart.destroy();
                 }
 
-                // Prepare chart data
-                const labels = Object.keys(data);
-                const values = Object.values(data);
-
+                // Create chart with monthly data
                 chart = new Chart(ctx, {
                     type: 'pie',
                     data: {
-                        labels: labels,
+                        labels: Object.keys(monthlyData),
                         datasets: [{
-                            data: values,
+                            data: Object.values(monthlyData),
                             backgroundColor: [
-                                '#FEB2B2', // red
-                                '#9AE6B4', // green
-                                '#90CDF4', // blue
-                                '#FBD38D', // yellow
-                                '#E9D8FD'  // purple
+                                '#FEB2B2',
+                                '#9AE6B4',
+                                '#90CDF4',
+                                '#FBD38D',
+                                '#E9D8FD'
                             ]
                         }]
                     },
@@ -650,7 +675,7 @@
                         responsive: true,
                         maintainAspectRatio: false,
                         layout: {
-                            padding: 20 // Add padding to prevent emoji cutoff
+                            padding: 20
                         },
                         plugins: {
                             legend: {
@@ -665,24 +690,25 @@
                     }
                 });
 
-                const rating = getEmissionsRating(total);
+                const rating = getEmissionsRating(monthlyTotal);
 
-                // Update total emissions display with emoji and rating
                 document.getElementById('totalEmissions').innerHTML = `
                     <div class="flex flex-col items-center">
                         <div class="text-6xl mb-2">${rating.emoji}</div>
-                        <div class="text-2xl font-bold text-gray-800">${total.toFixed(2)} kg CO2/Day</div>
+                        <div class="text-2xl font-bold text-gray-800">${monthlyTotal.toFixed(2)} kg CO2/Month</div>
                         <div class="text-lg text-gray-600">${rating.description}</div>
                     </div>
                 `;
 
-                document.getElementById('emissionDetails').innerHTML = labels.map((label, index) => `
-                    <div class="bg-gray-100 p-3 rounded-lg text-center">
-                        <h3 class="font-semibold text-gray-700 mb-1 text-sm">${label}</h3>
-                        <p class="text-xl font-bold text-gray-800">${values[index].toFixed(2)} kg</p>
-                    </div>
-                `).join('');
+                document.getElementById('emissionDetails').innerHTML = Object.entries(monthlyData)
+                    .map(([label, value]) => `
+                        <div class="bg-gray-100 p-3 rounded-lg text-center">
+                            <h3 class="font-semibold text-gray-700 mb-1 text-sm">${label}</h3>
+                            <p class="text-xl font-bold text-gray-800">${value.toFixed(2)} kg</p>
+                        </div>
+                    `).join('');
             }
+
     </script>
 </body>
 </html>
