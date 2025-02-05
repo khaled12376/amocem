@@ -7,8 +7,59 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
-     <style>
-         .logo-container {
+    <style>
+        .food-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .food-item {
+            display: flex;
+            align-items: center;
+            padding: 0.5rem;
+            border: 1px solid #e2e8f0;
+            border-radius: 0.5rem;
+            background-color: white;
+        }
+
+        .food-item:hover {
+            background-color: #f7fafc;
+        }
+
+        .food-item input[type="checkbox"] {
+            width: 1.2rem;
+            height: 1.2rem;
+            margin-right: 0.75rem;
+        }
+
+        .food-info {
+            position: relative;
+            display: inline-block;
+            margin-left: 0.5rem;
+        }
+
+        .food-tooltip {
+            display: none;
+            position: absolute;
+            background: #333;
+            color: white;
+            padding: 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            bottom: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            white-space: nowrap;
+            z-index: 10;
+        }
+
+        .food-info:hover .food-tooltip {
+            display: block;
+        }
+
+        .logo-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -37,18 +88,18 @@
         }
 
         body {
-            background:
-                linear-gradient(45deg, var(--bg-color-1), var(--bg-color-2)),
-                repeating-linear-gradient(
+            background: linear-gradient(45deg, var(--bg-color-1), var(--bg-color-2)),
+            repeating-linear-gradient(
                     45deg,
                     transparent,
                     transparent 20px,
-                    rgba(255,255,255,0.05) 20px,
-                    rgba(255,255,255,0.05) 40px
-                );
+                    rgba(255, 255, 255, 0.05) 20px,
+                    rgba(255, 255, 255, 0.05) 40px
+            );
             background-attachment: fixed;
             touch-action: manipulation;
         }
+
         .background-grid {
             position: fixed;
             top: 0;
@@ -71,31 +122,31 @@
         }
 
         .background-grid::before {
-            background-image:
-                linear-gradient(rgba(76, 175, 80, 0.1) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(76, 175, 80, 0.1) 1px, transparent 1px);
+            background-image: linear-gradient(rgba(76, 175, 80, 0.1) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(76, 175, 80, 0.1) 1px, transparent 1px);
             background-size: 30px 30px;
         }
 
         .container {
             position: relative;
-            background: rgba(255,255,255,0.9);
+            background: rgba(255, 255, 255, 0.9);
             border-radius: 1rem;
-            box-shadow: 0 10px 50px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 50px rgba(0, 0, 0, 0.1);
             overflow: hidden;
         }
 
         .card {
-            background: rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.8);
             backdrop-filter: blur(10px);
             transition: all 0.3s ease;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
         }
 
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
         }
+
         select, input {
             width: 100%;
             font-size: 16px;
@@ -108,11 +159,13 @@
             background-size: 1.5em;
             border-radius: 0.5rem;
         }
+
         .toggle-wrapper {
             display: flex;
             align-items: center;
             cursor: pointer;
         }
+
         .toggle {
             position: relative;
             width: 3.5rem;
@@ -121,6 +174,7 @@
             border-radius: 9999px;
             transition: background-color 0.2s;
         }
+
         .toggle-dot {
             position: absolute;
             top: 50%;
@@ -132,34 +186,42 @@
             border-radius: 9999px;
             transition: transform 0.2s;
         }
+
         .toggle-input:checked + .toggle {
             background-color: #48bb78;
         }
+
         .toggle-input:checked + .toggle .toggle-dot {
             transform: translate(1.5rem, -50%);
         }
+
         @media (max-width: 640px) {
             .container {
                 padding: 1rem;
             }
+
             h1 {
                 font-size: 2rem;
             }
+
             select, input, button {
                 min-height: 48px;
             }
         }
+
         .chart-container {
             position: relative;
             height: 300px;
             width: 100%;
         }
+
         .dynamic-input-group {
             display: grid;
             grid-template-columns: 2fr 1fr;
             gap: 0.5rem;
             margin-bottom: 0.5rem;
         }
+
         #addFoodBtn, #addWasteBtn {
             background-color: #48bb78;
             color: white;
@@ -170,434 +232,643 @@
     </style>
 </head>
 <body>
-    <div class="background-grid"></div>
-    <div class="container mx-auto px-4 py-8 max-w-4xl">
-        <!-- New Logo Container -->
-        <div class="logo-container">
-            <img src="logo1.png" alt="AMOC Green Logo" class="logo">
-            <img src="logo2.png" alt="AMOC Red Logo" class="logo">
-        </div>
-        <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
-            🍃 Monthly CO2 Emissions Calculator
-        </h1>
+<div class="background-grid"></div>
+<div class="container mx-auto px-4 py-8 max-w-4xl">
+    <!-- New Logo Container -->
+    <div class="logo-container">
+        <img src="logo1.png" alt="AMOC Green Logo" class="logo">
+        <img src="logo2.png" alt="AMOC Red Logo" class="logo">
+    </div>
+    <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
+        🍃 Monthly CO2 Emissions Calculator
+    </h1>
 
-<!--        &lt;!&ndash; Transportation Card &ndash;&gt;-->
-<!--        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">-->
-<!--            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">-->
-<!--                🚗 Transportation-->
-<!--            </h2>-->
-<!--            <div class="space-y-4">-->
-<!--                <div>-->
-<!--                    <label class="block text-gray-700 text-sm font-semibold mb-2">Fuel Type</label>-->
-<!--                    <select id="fuelType" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">-->
-<!--                        <option value="natural_gas">Natural Gas</option>-->
-<!--                        <option value="gasoline">Gasoline (Petrol)</option>-->
-<!--                        <option value="diesel">Diesel</option>-->
-<!--                        <option value="jet_gasoline">Jet Gasoline</option>-->
-<!--                    </select>-->
-<!--                </div>-->
-<!--                <div>-->
-<!--                    <label class="block text-gray-700 text-sm font-semibold mb-2">Average Daily Distance (km)</label>-->
-<!--                    <input type="number" id="distance" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">-->
-<!--                </div>-->
-<!--                <div class="toggle-wrapper">-->
-<!--                    <input type="checkbox" id="carAge" class="toggle-input sr-only">-->
-<!--                    <label for="carAge" class="flex items-center">-->
-<!--                        <div class="toggle mr-3">-->
-<!--                            <div class="toggle-dot"></div>-->
-<!--                        </div>-->
-<!--                        <span class="text-gray-700 text-sm font-semibold">Car made after 2010</span>-->
-<!--                    </label>-->
-<!--                </div>-->
-<!--            </div>-->
-<!--        </div>-->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
-                🚗 Transportation
-            </h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Fuel Type</label>
-                    <select id="fuelType" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
-                        <option value="natural_gas">Natural Gas</option>
-                        <option value="gasoline">Gasoline (Petrol)</option>
-                        <option value="diesel">Diesel</option>
-                        <option value="jet_gasoline">Jet Gasoline</option>
-                    </select>
-                </div>
-                <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Average Monthly Distance (km)</label>
-                    <input type="number" id="distance" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">
-                </div>
-                <div class="toggle-wrapper">
-                    <label class="flex items-center cursor-pointer">
-                        <input type="checkbox" id="carAge" class="sr-only toggle-input" onchange="this.nextElementSibling.classList.toggle('bg-48bb78')">
-                        <div class="toggle mr-3">
-                            <div class="toggle-dot"></div>
-                        </div>
-                        <span class="text-gray-700 text-sm font-semibold">Car made after 2010</span>
-                    </label>
-                </div>
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+            🚗 Transportation
+        </h2>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Fuel Type</label>
+                <select id="fuelType" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400">
+                    <option value="natural_gas">Natural Gas</option>
+                    <option value="gasoline">Gasoline (Petrol)</option>
+                    <option value="diesel">Diesel</option>
+                    <!--                        <option value="jet_gasoline">Jet Gasoline</option>-->
+                </select>
             </div>
-        </div>
-
-        <!-- Home Electricity Card -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
-                💡 Home Electricity
-            </h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Monthly Electricity Bill ($)</label>
-                    <input type="number" id="electricityBill" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">
-                </div>
-                <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Number of Household Members</label>
-                    <input type="number" id="householdMembers" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="1" inputmode="numeric" pattern="[0-9]*">
-                </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Average Daily Distance (km)</label>
+                <input type="number" id="distance" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400"
+                       min="0" inputmode="numeric" pattern="[0-9]*">
             </div>
-        </div>
-
-        <!-- Water Usage Card -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
-                💧 Water Usage
-            </h2>
-            <div class="space-y-4">
-                <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Monthly Water Bill ($)</label>
-                    <input type="number" id="waterBill" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric" pattern="[0-9]*">
-                </div>
-                <div>
-                    <label class="block text-gray-700 text-sm font-semibold mb-2">Number of Household Members</label>
-                    <input type="number" id="waterHouseholdMembers" class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="1" inputmode="numeric" pattern="[0-9]*">
-                </div>
-            </div>
-        </div>
-
-        <!-- Food Consumption Card -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
-                🍽️ Food Consumption
-            </h2>
-            <div id="foodInputs" class="space-y-4 mb-4">
-                <!-- Dynamically generated food inputs will appear here -->
-            </div>
-            <button id="addFoodBtn" class="w-full">+ Add Food Item</button>
-        </div>
-
-        <!-- Waste Management Card -->
-        <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
-            <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
-                🗑️ Waste Management
-            </h2>
-            <div id="wasteInputs" class="space-y-4 mb-4">
-                <!-- Dynamically generated waste inputs will appear here -->
-            </div>
-            <button id="addWasteBtn" class="w-full">+ Add Waste Type</button>
-        </div>
-
-        <button
-            id="calculateButton"
-            onclick="calculateEmissions()"
-            class="w-full text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:opacity-90 transition-colors mb-6"
-            style="background: linear-gradient(to right, #48bb78, #2c7a4b)"
-        >
-            Calculate My Daily Emissions
-        </button>
-
-        <!-- Results Section (Previous results section remains the same) -->
-        <div id="results" class="hidden rounded-xl shadow-lg p-4 md:p-8">
-            <div class="grid md:grid-cols-2 gap-4 md:gap-8">
-                <div class="chart-container">
-                    <h2 class="text-xl md:text-2xl font-bold text-gray-700 mb-4">Your Daily CO2 Breakdown</h2>
-                    <canvas id="emissionsChart"></canvas>
-                </div>
-                <div class="flex flex-col justify-center">
-                    <div id="totalEmissions" class="text-2xl md:text-3xl font-bold text-center text-green-600 mb-4"></div>
-                    <div class="bg-green-50 p-4 rounded-lg text-center">
-                        <p class="text-xs md:text-sm text-gray-600">Your daily emissions contribute to global climate change. Small reductions can make a big difference!</p>
+            <div class="toggle-wrapper">
+                <label class="flex items-center cursor-pointer">
+                    <input type="checkbox" id="carAge" class="sr-only toggle-input"
+                           onchange="this.nextElementSibling.classList.toggle('bg-48bb78')">
+                    <div class="toggle mr-3">
+                        <div class="toggle-dot"></div>
                     </div>
-                </div>
-            </div>
-            <div id="emissionDetails" class="mt-4 md:mt-6 grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
-                <!-- Detailed emissions will be added here dynamically -->
+                    <span class="text-gray-700 text-sm font-semibold">Car made after 2010</span>
+                </label>
             </div>
         </div>
     </div>
 
-    <script>
-        // Food Input Initialization
-        function initializeFoodInputs() {
-            const foodInputs = document.getElementById('foodInputs');
-            const addFoodBtn = document.getElementById('addFoodBtn');
-            const foodOptions = [
-                { value: 'beef', label: 'Beef', emissions: 27 },
-                { value: 'lamb', label: 'Lamb', emissions: 39 },
-                { value: 'cheese', label: 'Cheese', emissions: 13.5 },
-                { value: 'pork', label: 'Pork', emissions: 12 },
-                { value: 'turkey', label: 'Turkey', emissions: 10.9 },
-                { value: 'chicken', label: 'Chicken', emissions: 6.9 },
-                { value: 'tuna', label: 'Tuna', emissions: 6.1 },
-                { value: 'eggs', label: 'Eggs', emissions: 4.8 },
-                { value: 'potatoes', label: 'Potatoes', emissions: 2.9 },
-                { value: 'rice', label: 'Rice', emissions: 4.5 },
-                { value: 'nuts', label: 'Nuts', emissions: 0.43 },
-                { value: 'vegetables', label: 'Vegetables', emissions: 2 },
-                { value: 'lentils', label: 'Lentils', emissions: 0.9 },
-                { value: 'tofu', label: 'Tofu', emissions: 2 }
-            ];
+    <!-- Home Electricity Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+            💡 Home Electricity
+        </h2>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Monthly Electricity Bill ($)</label>
+                <input type="number" id="electricityBill"
+                       class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric"
+                       pattern="[0-9]*">
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Number of Household Members</label>
+                <input type="number" id="householdMembers"
+                       class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="1" inputmode="numeric"
+                       pattern="[0-9]*">
+            </div>
+        </div>
+    </div>
 
-            function createFoodInput() {
-                const div = document.createElement('div');
-                div.className = 'dynamic-input-group';
+    <!-- Water Usage Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+            💧 Water Usage
+        </h2>
+        <div class="space-y-4">
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Monthly Water Bill ($)</label>
+                <input type="number" id="waterBill"
+                       class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="0" inputmode="numeric"
+                       pattern="[0-9]*">
+            </div>
+            <div>
+                <label class="block text-gray-700 text-sm font-semibold mb-2">Number of Household Members</label>
+                <input type="number" id="waterHouseholdMembers"
+                       class="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-400" min="1" inputmode="numeric"
+                       pattern="[0-9]*">
+            </div>
+        </div>
+    </div>
 
-                const select = document.createElement('select');
-                select.className = 'food-type p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+    <!-- Food Consumption Card -->
+<!--    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">-->
+<!--        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">-->
+<!--            🍽️ Food Consumption-->
+<!--        </h2>-->
+<!--        <div id="foodInputs" class="space-y-4 mb-4">-->
+<!--            &lt;!&ndash; Dynamically generated food inputs will appear here &ndash;&gt;-->
+<!--        </div>-->
+<!--        <button id="addFoodBtn" class="w-full">+ Add Food Item</button>-->
+<!--    </div>-->
 
-                foodOptions.forEach(option => {
-                    const optionEl = document.createElement('option');
-                    optionEl.value = option.value;
-                    optionEl.textContent = option.label;
-                    select.appendChild(optionEl);
-                });
 
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.className = 'food-amount p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
-                input.placeholder = 'kg';
-                input.min = '0';
-                input.step = '0.1';
-                input.inputMode = 'numeric';
-                input.pattern = '[0-9]*';
+    <!-- Modified Food Consumption Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+            🍽️ Food Consumption
+        </h2>
+        <p class="text-gray-600 mb-4">
+            Choose 4 items at least :
 
-                const removeBtn = document.createElement('button');
-                removeBtn.textContent = '✕';
-                removeBtn.className = 'bg-red-500 text-white p-2 rounded-lg ml-2';
-                removeBtn.onclick = () => div.remove();
+        </p>
+        <div class="food-grid" id="foodCheckboxes">
+            <!-- Checkboxes will be generated here -->
+        </div>
+        <div class="mt-4 p-4 bg-gray-50 rounded-lg">
+            <p class="text-sm text-gray-600">
+                Selected foods: <span id="selectedFoods" class="font-semibold">None</span>
+            </p>
+            <p class="text-sm text-gray-600">
+                Distribution: <span id="foodDistribution" class="font-semibold">0 kg per selection</span>
+            </p>
+        </div>
+    </div>
+    <!-- Waste Management Card -->
+    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
+        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
+            🗑️ Daily Waste Management
+        </h2>
+        <div id="wasteInputs" class="space-y-4 mb-4">
+            <!-- Dynamically generated waste inputs will appear here -->
+        </div>
+        <button id="addWasteBtn" class="w-full">+ Add Waste Type</button>
+    </div>
 
-                div.appendChild(select);
-                div.appendChild(input);
-                div.appendChild(removeBtn);
+    <button
+            id="calculateButton"
+            onclick="calculateEmissions()"
+            class="w-full text-white font-bold py-3 px-6 rounded-xl shadow-lg hover:opacity-90 transition-colors mb-6"
+            style="background: linear-gradient(to right, #48bb78, #2c7a4b)"
+    >
+        Calculate My Daily Emissions
+    </button>
 
-                return div;
-            }
+    <!-- Results Section (Previous results section remains the same) -->
+    <div id="results" class="hidden rounded-xl shadow-lg p-4 md:p-8">
+        <div class="grid md:grid-cols-2 gap-4 md:gap-8">
+            <div class="chart-container">
+                <h2 class="text-xl md:text-2xl font-bold text-gray-700 mb-4">Your Daily CO2 Breakdown</h2>
+                <canvas id="emissionsChart"></canvas>
+            </div>
+            <div class="flex flex-col justify-center">
+                <div id="totalEmissions" class="text-2xl md:text-3xl font-bold text-center text-green-600 mb-4"></div>
+                <div class="bg-green-50 p-4 rounded-lg text-center">
+                    <p class="text-xs md:text-sm text-gray-600">Your emissions contribute to global climate
+                        change. Small reductions can make a big difference!</p>
+                </div>
+            </div>
+        </div>
+        <div id="emissionDetails" class="mt-4 md:mt-6 grid grid-cols-2 md:grid-cols-3 gap-2 md:gap-4">
+            <!-- Detailed emissions will be added here dynamically -->
+        </div>
+    </div>
+</div>
 
-            // Initial two food inputs
-            foodInputs.appendChild(createFoodInput());
-            foodInputs.appendChild(createFoodInput());
+<script>
+    // Food Input Initialization
+    function initializeFoodInputs() {
+        const foodInputs = document.getElementById('foodInputs');
+        const addFoodBtn = document.getElementById('addFoodBtn');
+        const foodOptions = [
+            {value: 'beef', label: 'Beef', emissions: 27},
+            {value: 'lamb', label: 'Lamb', emissions: 39},
+            {value: 'cheese', label: 'Cheese', emissions: 13.5},
+            // {value: 'pork', label: 'Pork', emissions: 12},
+            {value: 'turkey', label: 'Turkey', emissions: 10.9},
+            {value: 'chicken', label: 'Chicken', emissions: 6.9},
+            {value: 'tuna', label: 'Tuna', emissions: 6.1},
+            {value: 'eggs', label: 'Eggs', emissions: 4.8},
+            {value: 'potatoes', label: 'Potatoes', emissions: 2.9},
+            {value: 'rice', label: 'Rice', emissions: 4.5},
+            {value: 'nuts', label: 'Nuts', emissions: 0.43},
+            {value: 'vegetables', label: 'Vegetables', emissions: 2},
+            {value: 'lentils', label: 'Lentils', emissions: 0.9},
+            {value: 'tofu', label: 'Tofu', emissions: 2}
+        ];
 
-            // Add Food Button
-            addFoodBtn.addEventListener('click', () => {
-                if (foodInputs.children.length < 6) {
-                    foodInputs.appendChild(createFoodInput());
-                }
+        function createFoodInput() {
+            const div = document.createElement('div');
+            div.className = 'dynamic-input-group';
+
+            const select = document.createElement('select');
+            select.className = 'food-type p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+
+            foodOptions.forEach(option => {
+                const optionEl = document.createElement('option');
+                optionEl.value = option.value;
+                optionEl.textContent = option.label;
+                select.appendChild(optionEl);
             });
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'food-amount p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+            input.placeholder = 'kg';
+            input.min = '0';
+            input.step = '0.1';
+            input.inputMode = 'numeric';
+            input.pattern = '[0-9]*';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = '✕';
+            removeBtn.className = 'bg-red-500 text-white p-2 rounded-lg ml-2';
+            removeBtn.onclick = () => div.remove();
+
+            div.appendChild(select);
+            div.appendChild(input);
+            div.appendChild(removeBtn);
+
+            return div;
         }
 
-        // Waste Input Initialization
-        function initializeWasteInputs() {
-            const wasteInputs = document.getElementById('wasteInputs');
-            const addWasteBtn = document.getElementById('addWasteBtn');
-            const wasteOptions = [
-                { value: 'organic', label: 'Organic Waste', emissions: 0.15 },
-                { value: 'paper', label: 'Paper', emissions: 1.7 },
-                { value: 'plastic', label: 'Plastic', emissions: 6 },
-                { value: 'glass', label: 'Glass', emissions: 0.21 },
-                { value: 'metal', label: 'Metal', emissions: 0.39 },
-                { value: 'textiles', label: 'Textiles', emissions: 3.5 },
-                { value: 'food_waste', label: 'Food Waste', emissions: 0.25 },
-                { value: 'yard_waste', label: 'Yard Waste', emissions: 0.13 },
-                { value: 'electronics', label: 'Electronics', emissions: 9 }
-            ];
+        // Initial two food inputs
+        foodInputs.appendChild(createFoodInput());
+        foodInputs.appendChild(createFoodInput());
 
-            function createWasteInput() {
-                const div = document.createElement('div');
-                div.className = 'dynamic-input-group';
-
-                const select = document.createElement('select');
-                select.className = 'waste-type p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
-
-                wasteOptions.forEach(option => {
-                    const optionEl = document.createElement('option');
-                    optionEl.value = option.value;
-                    optionEl.textContent = option.label;
-                    select.appendChild(optionEl);
-                });
-
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.className = 'waste-amount p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
-                input.placeholder = 'kg';
-                input.min = '0';
-                input.step = '0.1';
-                input.inputMode = 'numeric';
-                input.pattern = '[0-9]*';
-
-                const removeBtn = document.createElement('button');
-                removeBtn.textContent = '✕';
-                removeBtn.className = 'bg-red-500 text-white p-2 rounded-lg ml-2';
-                removeBtn.onclick = () => div.remove();
-
-                div.appendChild(select);
-                div.appendChild(input);
-                div.appendChild(removeBtn);
-
-                return div;
+        // Add Food Button
+        addFoodBtn.addEventListener('click', () => {
+            if (foodInputs.children.length < 6) {
+                foodInputs.appendChild(createFoodInput());
             }
+        });
+    }
 
-            // Initial two waste inputs
-            wasteInputs.appendChild(createWasteInput());
-            wasteInputs.appendChild(createWasteInput());
+    // Waste Input Initialization
+    function initializeWasteInputs() {
+        const wasteInputs = document.getElementById('wasteInputs');
+        const addWasteBtn = document.getElementById('addWasteBtn');
+        const wasteOptions = [
+            {value: 'organic', label: 'Organic Waste in Kg', emissions: 0.15},
+            {value: 'paper', label: 'No. of Paper sheets', emissions: 1.7 * 0.005},
+            {value: 'plastic', label: 'No. of plastic bottles', emissions: 0.15},
+            {value: 'glass', label: 'No. of Glass bottles', emissions: 0.21 * 0.26},
+            {value: 'metal', label: 'No. of Metal cans', emissions: 0.39 * 0.015},
+            // {value: 'textiles', label: 'Textiles', emissions: 3.5},
+            {value: 'food_waste', label: 'Food Waste in Kg', emissions: 0.25},
+            // {value: 'yard_waste', label: 'Yard Waste', emissions: 0.13},
+            {value: 'electronics', label: 'Electronics', emissions: 9}
+        ];
 
-            // Add Waste Button
-            addWasteBtn.addEventListener('click', () => {
-                if (wasteInputs.children.length < 6) {
-                    wasteInputs.appendChild(createWasteInput());
-                }
+        function createWasteInput() {
+            const div = document.createElement('div');
+            div.className = 'dynamic-input-group';
+
+            const select = document.createElement('select');
+            select.className = 'waste-type p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+
+            wasteOptions.forEach(option => {
+                const optionEl = document.createElement('option');
+                optionEl.value = option.value;
+                optionEl.textContent = option.label;
+                select.appendChild(optionEl);
             });
+
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.className = 'waste-amount p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
+            // input.placeholder = 'kg';
+            input.min = '0';
+            input.step = '0.1';
+            input.inputMode = 'numeric';
+            input.pattern = '[0-9]*';
+
+            const removeBtn = document.createElement('button');
+            removeBtn.textContent = '✕';
+            removeBtn.className = 'bg-red-500 text-white p-2 rounded-lg ml-2';
+            removeBtn.onclick = () => div.remove();
+
+            div.appendChild(select);
+            div.appendChild(input);
+            div.appendChild(removeBtn);
+
+            return div;
         }
 
-        // Emissions Calculations
-        const emissions = {
-            transport: {
-                natural_gas: 2.6928,
-                gasoline: 2.4,
-                diesel: 2.7,
-                jet_gasoline: 3.101
-            },
-            food: {
-                beef: 27,
-                lamb: 39,
-                cheese: 13.5,
-                pork: 12,
-                turkey: 10.9,
-                chicken: 6.9,
-                tuna: 6.1,
-                eggs: 4.8,
-                potatoes: 2.9,
-                rice: 4.5,
-                nuts: 0.43,
-                vegetables: 2,
-                lentils: 0.9,
-                tofu: 2
-            },
-            waste: {
-                organic: 0.15,
-                paper: 1.7,
-                plastic: 6,
-                glass: 0.21,
-                metal: 0.39,
-                textiles: 3.5,
-                food_waste: 0.25,
-                yard_waste: 0.13,
-                electronics: 9
+        // Initial two waste inputs
+        wasteInputs.appendChild(createWasteInput());
+        wasteInputs.appendChild(createWasteInput());
+
+        // Add Waste Button
+        addWasteBtn.addEventListener('click', () => {
+            if (wasteInputs.children.length < 6) {
+                wasteInputs.appendChild(createWasteInput());
             }
+        });
+    }
+
+    // Emissions Calculations
+    const emissions = {
+        transport: {
+            natural_gas: 2.6928,
+            gasoline: 2.4,
+            diesel: 2.7,
+            // jet_gasoline: 3.101
+        },
+        food: {
+            beef: 27,
+            lamb: 39,
+            cheese: 13.5,
+            // pork: 12,
+            turkey: 10.9,
+            chicken: 6.9,
+            tuna: 6.1,
+            eggs: 4.8,
+            potatoes: 2.9,
+            rice: 4.5,
+            nuts: 0.43,
+            vegetables: 2,
+            lentils: 0.9,
+            tofu: 2
+        },
+        waste: {
+            organic: 0.15,
+            paper: (1.7 * 0.005),
+            plastic: (6 * 0.025),
+            glass: (0.21 * 0.26),
+            metal: (0.39 * 0.015),
+            // textiles: 3.5,
+            food_waste: 0.25,
+            // yard_waste: 0.13,
+            electronics: (9 * 0.025 / 30)
+        }
+    };
+
+    let chart = null;
+
+    function calculateTransportEmissions() {
+        const fuelType = document.getElementById('fuelType').value;
+        const distance = parseFloat(document.getElementById('distance').value) || 0;
+        const isNewCar = document.getElementById('carAge').checked;
+        const factor = isNewCar ? 6.6666 : 6.25;
+
+        return distance * factor * emissions.transport[fuelType];
+
+    }
+
+    function calculateElectricityEmissions() {
+        const bill = parseFloat(document.getElementById('electricityBill').value) || 0;
+        const members = parseFloat(document.getElementById('householdMembers').value) || 1;
+
+        return bill / members / 30 / 1.3 * 0.416;
+    }
+
+    function calculateWaterEmissions() {
+        const bill = parseFloat(document.getElementById('waterBill').value) || 0;
+        const members = parseFloat(document.getElementById('waterHouseholdMembers').value) || 1;
+        return bill / members / 30 / 0.65 * 0.3;
+    }
+
+    // function calculateFoodEmissions() {
+    //     const foodTypes = document.querySelectorAll('.food-type');
+    //     const foodAmounts = document.querySelectorAll('.food-amount');
+    //     let totalFoodEmissions = 0;
+    //
+    //     for (let i = 0; i < foodTypes.length; i++) {
+    //         const type = foodTypes[i].value;
+    //         const amount = parseFloat(foodAmounts[i].value) || 0;
+    //         const emissionFactor = emissions.food[type] || 0;
+    //         totalFoodEmissions += amount * emissionFactor;
+    //     }
+    //
+    //     return totalFoodEmissions;
+    // }
+
+    function calculateWasteEmissions() {
+        const wasteTypes = document.querySelectorAll('.waste-type');
+        const wasteAmounts = document.querySelectorAll('.waste-amount');
+        let totalWasteEmissions = 0;
+
+        for (let i = 0; i < wasteTypes.length; i++) {
+            const type = wasteTypes[i].value;
+            const amount = parseFloat(wasteAmounts[i].value) || 0;
+            const emissionFactor = emissions.waste[type] || 0;
+            // print the type, amount and emission factor
+            console.log(type, amount, emissionFactor);
+            totalWasteEmissions += amount * emissionFactor;
+        }
+
+        return totalWasteEmissions;
+    }
+
+    // function displayResults(data, total) {
+    //     const results = document.getElementById('results');
+    //     const emissionDetails = document.getElementById('emissionDetails');
+    //     results.classList.remove('hidden');
+    //
+    //     const ctx = document.getElementById('emissionsChart').getContext('2d');
+    //
+    //     if (chart) {
+    //         chart.destroy();
+    //     }
+    //
+    //     chart = new Chart(ctx, {
+    //         type: 'doughnut',
+    //         data: {
+    //             labels: Object.keys(data),
+    //             datasets: [{
+    //                 data: Object.values(data),
+    //                 backgroundColor: [
+    //                     '#FEB2B2', // red
+    //                     '#9AE6B4', // green
+    //                     '#90CDF4', // blue
+    //                     '#FBD38D', // yellow
+    //                     '#E9D8FD'  // purple
+    //                 ]
+    //             }]
+    //         },
+    //         options: {
+    //             responsive: true,
+    //             maintainAspectRatio: false,
+    //             plugins: {
+    //                 legend: {
+    //                     position: 'bottom'
+    //                 }
+    //             }
+    //         }
+    //     });
+    //
+    //     document.getElementById('totalEmissions').textContent =
+    //         `${total.toFixed(2)} kg CO2 per Day`;
+    //
+    //     emissionDetails.innerHTML = Object.entries(data).map(([category, value]) => `
+    //         <div class="bg-gray-100 p-3 md:p-4 rounded-lg text-center">
+    //             <h3 class="font-semibold text-gray-700 mb-1 text-sm">${category}</h3>
+    //             <p class="text-xl md:text-2xl font-bold text-gray-800">${value.toFixed(2)} kg</p>
+    //             <p class="text-xs text-gray-500">Daily Emissions</p>
+    //         </div>
+    //     `).join('');
+    // }
+
+    // function calculateEmissions() {
+    //     const transportEmissions = calculateTransportEmissions();
+    //     const electricityEmissions = calculateElectricityEmissions();
+    //     const waterEmissions = calculateWaterEmissions();
+    //     const foodEmissions = calculateFoodEmissions();
+    //     const wasteEmissions = calculateWasteEmissions();
+    //
+    //     const totalEmissions = transportEmissions + electricityEmissions +
+    //         waterEmissions + foodEmissions + wasteEmissions;
+    //
+    //     displayResults({
+    //         Transport: transportEmissions,
+    //         Electricity: electricityEmissions,
+    //         Water: waterEmissions,
+    //         Food: foodEmissions,
+    //         Waste: wasteEmissions
+    //     }, totalEmissions);
+    // }
+
+    // Initialize inputs when page loads
+    window.onload = function () {
+        initializeFoodInputs();
+        initializeWasteInputs();
+    }
+
+    function getEmissionsRating(total) {
+        // Adjusted thresholds for monthly values (multiplied by 30)
+        if (total < 600) {
+            return {emoji: '🌱', description: 'Eco Champion!'};
+        } else if (total < 660) {
+            return {emoji: '🍃', description: 'Green Living'};
+        } else if (total < 750) {
+            return {emoji: '🌍', description: 'Average Impact <br> Keep Reducing'};
+        } else if (total < 1000) {
+            return {emoji: '🚨', description: 'High Emissions <br> Take Action'};
+        } else {
+            return {emoji: '🔥', description: 'Climate Concern! <br> Urgent Changes'};
+        }
+    }
+
+    function displayResults(data, total) {
+        const monthlyTotal = total * 30; // Convert daily to monthly
+        const monthlyData = {};
+
+        // Convert all data points to monthly values
+        for (let key in data) {
+            monthlyData[key] = data[key] * 30;
+        }
+
+        const results = document.getElementById('results');
+        results.classList.remove('hidden');
+
+        const ctx = document.getElementById('emissionsChart').getContext('2d');
+
+        if (chart) {
+            chart.destroy();
+        }
+
+        // Create chart with monthly data
+        chart = new Chart(ctx, {
+            type: 'pie',
+            data: {
+                labels: Object.keys(monthlyData),
+                datasets: [{
+                    data: Object.values(monthlyData),
+                    backgroundColor: [
+                        '#FEB2B2',
+                        '#9AE6B4',
+                        '#90CDF4',
+                        '#FBD38D',
+                        '#E9D8FD'
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                layout: {
+                    padding: 20
+                },
+                plugins: {
+                    legend: {
+                        position: 'bottom',
+                        labels: {
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        const rating = getEmissionsRating(monthlyTotal);
+
+        document.getElementById('totalEmissions').innerHTML = `
+                    <div class="flex flex-col items-center">
+                        <div class="text-6xl mb-2">${rating.emoji}</div>
+                        <div class="text-2xl font-bold text-gray-800">${monthlyTotal.toFixed(2)} kg CO2/Month</div>
+                        <div class="text-lg text-gray-600">${rating.description}</div>
+                    </div>
+                `;
+
+        document.getElementById('emissionDetails').innerHTML = Object.entries(monthlyData)
+            .map(([label, value]) => `
+                        <div class="bg-gray-100 p-3 rounded-lg text-center">
+                            <h3 class="font-semibold text-gray-700 mb-1 text-sm">${label}</h3>
+                            <p class="text-xl font-bold text-gray-800">${value.toFixed(2)} kg</p>
+                        </div>
+                    `).join('');
+    }
+
+    const foodEmissions = {
+            beef: { label: 'Beef', emissions: 27 },
+            lamb: { label: 'Lamb', emissions: 39 },
+            cheese: { label: 'Cheese', emissions: 13.5 },
+            // pork: { label: 'Pork', emissions: 12 },
+            turkey: { label: 'Turkey', emissions: 10.9 },
+            chicken: { label: 'Chicken', emissions: 6.9 },
+            tuna: { label: 'Tuna', emissions: 6.1 },
+            eggs: { label: 'Eggs', emissions: 4.8 },
+            potatoes: { label: 'Potatoes', emissions: 2.9 },
+            rice: { label: 'Rice', emissions: 4.5 },
+            nuts: { label: 'Nuts', emissions: 0.43 },
+            vegetables: { label: 'Vegetables', emissions: 2 },
+            lentils: { label: 'Lentils', emissions: 0.9 },
+            tofu: { label: 'Tofu', emissions: 2 }
         };
 
-        let chart = null;
+        // Generate food checkboxes
+        function initializeFoodSection() {
+            const container = document.getElementById('foodCheckboxes');
 
-        function calculateTransportEmissions() {
-            const fuelType = document.getElementById('fuelType').value;
-            const distance = parseFloat(document.getElementById('distance').value) || 0;
-            const isNewCar = document.getElementById('carAge').checked;
+            Object.entries(foodEmissions).forEach(([key, value]) => {
+                const div = document.createElement('div');
+                div.className = 'food-item';
 
-            let transportEmissions = distance * emissions.transport[fuelType];
-            if (!isNewCar) transportEmissions *= 1.2; // 20% more for older cars
-            return transportEmissions;
+                div.innerHTML = `
+                    <input type="checkbox" id="food-${key}" name="food" value="${key}">
+                    <label for="food-${key}">${value.label}</label>
+                    <div class="food-info">
+                        ℹ️
+                        <span class="food-tooltip">${value.emissions} kg CO2/kg</span>
+                    </div>
+                `;
+
+                container.appendChild(div);
+            });
+
+            // Add event listeners to all checkboxes
+            document.querySelectorAll('input[name="food"]').forEach(checkbox => {
+                checkbox.addEventListener('change', updateFoodSelection);
+            });
         }
 
-        function calculateElectricityEmissions() {
-            const bill = parseFloat(document.getElementById('electricityBill').value) || 0;
-            const members = parseFloat(document.getElementById('householdMembers').value) || 1;
-            return (bill * 0.5) / members;
+        // Update food selection display
+        function updateFoodSelection() {
+            const selectedCheckboxes = document.querySelectorAll('input[name="food"]:checked');
+            const selectedFoodsSpan = document.getElementById('selectedFoods');
+            const distributionSpan = document.getElementById('foodDistribution');
+
+            if (selectedCheckboxes.length === 0) {
+                selectedFoodsSpan.textContent = 'None';
+                distributionSpan.textContent = '0 kg per selection';
+                return;
+            }
+
+            const foodNames = Array.from(selectedCheckboxes).map(cb =>
+                foodEmissions[cb.value].label
+            );
+
+            const kgPerFood = (45 / selectedCheckboxes.length).toFixed(2);
+
+            selectedFoodsSpan.textContent = foodNames.join(', ');
+            distributionSpan.textContent = `${kgPerFood} kg per selection`;
         }
 
-        function calculateWaterEmissions() {
-            const bill = parseFloat(document.getElementById('waterBill').value) || 0;
-            const members = parseFloat(document.getElementById('waterHouseholdMembers').value) || 1;
-            return (bill * 0.3) / members;
-        }
-
+        // Calculate food emissions
         function calculateFoodEmissions() {
-            const foodTypes = document.querySelectorAll('.food-type');
-            const foodAmounts = document.querySelectorAll('.food-amount');
-            let totalFoodEmissions = 0;
+            const selectedFoods = document.querySelectorAll('input[name="food"]:checked');
+            const numSelected = selectedFoods.length;
 
-            for (let i = 0; i < foodTypes.length; i++) {
-                const type = foodTypes[i].value;
-                const amount = parseFloat(foodAmounts[i].value) || 0;
-                const emissionFactor = emissions.food[type] || 0;
-                totalFoodEmissions += amount * emissionFactor;
-            }
+            if (numSelected === 0) return 0;
 
-            return totalFoodEmissions;
+            const kgPerFood = 45 / numSelected;
+
+            let totalEmissions = 0;
+            selectedFoods.forEach(food => {
+                const emissionsFactor = foodEmissions[food.value].emissions;
+                totalEmissions += emissionsFactor * kgPerFood;
+            });
+
+            return totalEmissions/30;
         }
 
-        function calculateWasteEmissions() {
-            const wasteTypes = document.querySelectorAll('.waste-type');
-            const wasteAmounts = document.querySelectorAll('.waste-amount');
-            let totalWasteEmissions = 0;
+        // Initialize the food section when the page loads
+        window.onload = function() {
+            initializeFoodSection();
+            initializeWasteInputs()
 
-            for (let i = 0; i < wasteTypes.length; i++) {
-                const type = wasteTypes[i].value;
-                const amount = parseFloat(wasteAmounts[i].value) || 0;
-                const emissionFactor = emissions.waste[type] || 0;
-                totalWasteEmissions += amount * emissionFactor;
-            }
+        };
 
-            return totalWasteEmissions;
-        }
-
-        // function displayResults(data, total) {
-        //     const results = document.getElementById('results');
-        //     const emissionDetails = document.getElementById('emissionDetails');
-        //     results.classList.remove('hidden');
-        //
-        //     const ctx = document.getElementById('emissionsChart').getContext('2d');
-        //
-        //     if (chart) {
-        //         chart.destroy();
-        //     }
-        //
-        //     chart = new Chart(ctx, {
-        //         type: 'doughnut',
-        //         data: {
-        //             labels: Object.keys(data),
-        //             datasets: [{
-        //                 data: Object.values(data),
-        //                 backgroundColor: [
-        //                     '#FEB2B2', // red
-        //                     '#9AE6B4', // green
-        //                     '#90CDF4', // blue
-        //                     '#FBD38D', // yellow
-        //                     '#E9D8FD'  // purple
-        //                 ]
-        //             }]
-        //         },
-        //         options: {
-        //             responsive: true,
-        //             maintainAspectRatio: false,
-        //             plugins: {
-        //                 legend: {
-        //                     position: 'bottom'
-        //                 }
-        //             }
-        //         }
-        //     });
-        //
-        //     document.getElementById('totalEmissions').textContent =
-        //         `${total.toFixed(2)} kg CO2 per Day`;
-        //
-        //     emissionDetails.innerHTML = Object.entries(data).map(([category, value]) => `
-        //         <div class="bg-gray-100 p-3 md:p-4 rounded-lg text-center">
-        //             <h3 class="font-semibold text-gray-700 mb-1 text-sm">${category}</h3>
-        //             <p class="text-xl md:text-2xl font-bold text-gray-800">${value.toFixed(2)} kg</p>
-        //             <p class="text-xs text-gray-500">Daily Emissions</p>
-        //         </div>
-        //     `).join('');
-        // }
-
+        // Update the original calculateEmissions function to use the new food calculation
         function calculateEmissions() {
             const transportEmissions = calculateTransportEmissions();
             const electricityEmissions = calculateElectricityEmissions();
@@ -617,98 +888,6 @@
             }, totalEmissions);
         }
 
-        // Initialize inputs when page loads
-        window.onload = function() {
-            initializeFoodInputs();
-            initializeWasteInputs();
-        }
-        function getEmissionsRating(total) {
-                // Adjusted thresholds for monthly values (multiplied by 30)
-                if (total < 300) {
-                    return { emoji: '🌱', description: 'Eco Champion!' };
-                } else if (total < 600) {
-                    return { emoji: '🍃', description: 'Green Living' };
-                } else if (total < 1050) {
-                    return { emoji: '🌍', description: 'Average Impact' };
-                } else if (total < 1500) {
-                    return { emoji: '🚨', description: 'High Emissions' };
-                } else {
-                    return { emoji: '🔥', description: 'Climate Concern!' };
-                }
-            }
-
-        function displayResults(data, total) {
-                const monthlyTotal = total * 30; // Convert daily to monthly
-                const monthlyData = {};
-
-                // Convert all data points to monthly values
-                for (let key in data) {
-                    monthlyData[key] = data[key] * 30;
-                }
-
-                const results = document.getElementById('results');
-                results.classList.remove('hidden');
-
-                const ctx = document.getElementById('emissionsChart').getContext('2d');
-
-                if (chart) {
-                    chart.destroy();
-                }
-
-                // Create chart with monthly data
-                chart = new Chart(ctx, {
-                    type: 'pie',
-                    data: {
-                        labels: Object.keys(monthlyData),
-                        datasets: [{
-                            data: Object.values(monthlyData),
-                            backgroundColor: [
-                                '#FEB2B2',
-                                '#9AE6B4',
-                                '#90CDF4',
-                                '#FBD38D',
-                                '#E9D8FD'
-                            ]
-                        }]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        layout: {
-                            padding: 20
-                        },
-                        plugins: {
-                            legend: {
-                                position: 'bottom',
-                                labels: {
-                                    font: {
-                                        size: 12
-                                    }
-                                }
-                            }
-                        }
-                    }
-                });
-
-                const rating = getEmissionsRating(monthlyTotal);
-
-                document.getElementById('totalEmissions').innerHTML = `
-                    <div class="flex flex-col items-center">
-                        <div class="text-6xl mb-2">${rating.emoji}</div>
-                        <div class="text-2xl font-bold text-gray-800">${monthlyTotal.toFixed(2)} kg CO2/Month</div>
-                        <div class="text-lg text-gray-600">${rating.description}</div>
-                    </div>
-                `;
-
-                document.getElementById('emissionDetails').innerHTML = Object.entries(monthlyData)
-                    .map(([label, value]) => `
-                        <div class="bg-gray-100 p-3 rounded-lg text-center">
-                            <h3 class="font-semibold text-gray-700 mb-1 text-sm">${label}</h3>
-                            <p class="text-xl font-bold text-gray-800">${value.toFixed(2)} kg</p>
-                        </div>
-                    `).join('');
-            }
-
-    </script>
+</script>
 </body>
 </html>
