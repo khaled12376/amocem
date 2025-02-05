@@ -3,61 +3,123 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🍃 Monthly CO2 Emissions Calculator</title>
+    <link rel="icon" type="image/png"
+          href="data:image/png;base64,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">
+    <title> Monthly CO2 Emissions Calculator</title>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.7.0/chart.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+
     <style>
-        .food-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-top: 1rem;
-        }
 
         .food-item {
-            display: flex;
-            align-items: center;
-            padding: 0.5rem;
-            border: 1px solid #e2e8f0;
-            border-radius: 0.5rem;
-            background-color: white;
-        }
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background 0.2s, box-shadow 0.2s, border 0.2s;
+    margin: 5px 0;
+    border: 2px solid transparent;
+}
 
-        .food-item:hover {
-            background-color: #f7fafc;
-        }
+.food-item:hover {
+    background: #f1f1f1;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
-        .food-item input[type="checkbox"] {
-            width: 1.2rem;
-            height: 1.2rem;
-            margin-right: 0.75rem;
-        }
+.food-item.selected {
+    background: #cce5ff; /* Light blue selection */
+    border: 2px solid #007bff; /* Blue border */
+    box-shadow: 0 2px 8px rgba(0, 123, 255, 0.2);
+}
 
-        .food-info {
-            position: relative;
-            display: inline-block;
-            margin-left: 0.5rem;
-        }
+.food-label {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    justify-content: space-between;
+    cursor: pointer;
+}
 
-        .food-tooltip {
-            display: none;
-            position: absolute;
-            background: #333;
-            color: white;
-            padding: 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            bottom: 100%;
-            left: 50%;
-            transform: translateX(-50%);
-            white-space: nowrap;
-            z-index: 10;
-        }
+.food-info {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
 
-        .food-info:hover .food-tooltip {
-            display: block;
-        }
+.food-info:hover .food-tooltip {
+    visibility: visible;
+    opacity: 1;
+}
+
+.food-tooltip {
+    visibility: hidden;
+    opacity: 0;
+    position: absolute;
+    bottom: 20px;
+    background: black;
+    color: white;
+    padding: 5px;
+    border-radius: 5px;
+    font-size: 12px;
+    white-space: nowrap;
+    transition: opacity 0.3s;
+}
+
+
+        /*.food-grid {*/
+        /*    display: grid;*/
+        /*    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));*/
+        /*    gap: 1rem;*/
+        /*    margin-top: 1rem;*/
+        /*}*/
+
+        /*.food-item {*/
+        /*    display: flex;*/
+        /*    align-items: center;*/
+        /*    padding: 0.5rem;*/
+        /*    border: 1px solid #e2e8f0;*/
+        /*    border-radius: 0.5rem;*/
+        /*    background-color: white;*/
+        /*}*/
+
+        /*.food-item:hover {*/
+        /*    background-color: #f7fafc;*/
+        /*}*/
+
+        /*.food-item input[type="checkbox"] {*/
+        /*    width: 1.2rem;*/
+        /*    height: 1.2rem;*/
+        /*    margin-right: 0.75rem;*/
+        /*}*/
+
+        /*.food-info {*/
+        /*    position: relative;*/
+        /*    display: inline-block;*/
+        /*    margin-left: 0.5rem;*/
+        /*}*/
+
+        /*.food-tooltip {*/
+        /*    display: none;*/
+        /*    position: absolute;*/
+        /*    background: #333;*/
+        /*    color: white;*/
+        /*    padding: 0.5rem;*/
+        /*    border-radius: 0.25rem;*/
+        /*    font-size: 0.75rem;*/
+        /*    bottom: 100%;*/
+        /*    left: 50%;*/
+        /*    transform: translateX(-50%);*/
+        /*    white-space: nowrap;*/
+        /*    z-index: 10;*/
+        /*}*/
+
+        /*.food-info:hover .food-tooltip {*/
+        /*    display: block;*/
+        /*}*/
 
         .logo-container {
             display: flex;
@@ -239,10 +301,14 @@
         <img src="logo1.png" alt="AMOC Green Logo" class="logo">
         <img src="logo2.png" alt="AMOC Red Logo" class="logo">
     </div>
-    <h1 class="text-4xl font-bold text-center text-gray-800 mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
-        🍃 Monthly CO2 Emissions Calculator
-    </h1>
 
+    <h1 class="flex items-center justify-center gap-4 text-4xl font-bold text-center mb-8 bg-clip-text text-transparent bg-gradient-to-r from-green-400 to-blue-500">
+        <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAABkCAYAAABw4pVUAAAACXBIWXMAAAsTAAALEwEAmpwYAAAKEUlEQVR4nO1de6ycRRWfKorv9xMxqKlS7p7ztfWaiA+8qJTuzuxtiXqNBlMUsUZQS8TwUKGKj9QHJBVBGrEhUVGJioAmiDb1UZ9poGnv/c5819amUCooFRUE2kLXnG/3tnt3Z77n7O5td37J/LffnDNzZs45c86ZWSE8PDw8PDw8PDw8PDw8PDw8PDw8PDyGCBN3nfxURbhKajx30LwMNSYmR56sCFdKgt1KY0Nq/NKgeRpKdAqirX110LwNJSThzzsEMdPWDpq3oYTU+AujQAi+NWjehhKK8GfmHQI/6icfo5tHn1QLYQnbLqnhZkWwQRH+UhH+UBF+TkV4Gv+mDI26Hn2BJPiw1HiVIvipJPiV1PhdpeEr9bBy+tjGsWPEoCEJb7LskA19YaAh5tU0nqMI7raozkNNarxXabywOj3/2DwkltLCV/ACUxoOJNIg+Ici/BTbVTEoxCvQzNwdvaa9jBYfpzTeniaIbsHApIwqJ2WhUdN4ntTwv1w0CKdUGIAYBNhWWBj7ey/pjm+FFysNOq8w2nbL/dXpYHESDanh4qL9824Z1xCIfoPdW+OACR/v1datbx59miTcUniyDvEIu5eGC15qpEHwgbL9s1Dk5MhLRD/BOtPG0LgOXtkjmmtKT9Zh9XVLZ//L/1p5uSL8j0WIj7GzwM6DCuESdu+lhm12oeNPRD/BIRI7M5W3uqbHullp2G9RQ/9VGj6vosrCZXTiM1mtyQjfogiviyey+5t/sdfEjsEsGhp/bB4T/LEWBq8xz0NQNRyO41YLK3XRL8iw8g77Cgw+4pyexvWWlT6tInyV7TsV4SmK4L62yf0eC8zkURmFR/CnJVuCpyfxtpTwRLZNBv5uF/2CjILX29UBXuWSVnV6/rOUhocMK/chNbXo1Wnf1whepwjv5DOJdTysirqEgY+OT47Mz8Jj7IJ3f38wC39OoKKFL0swak7PIioKVpjp4Ged0dAQGWhcm/V7PhxaVNeFoh+YaEw80XZgkgQPrG6IJ7iipTSuMxlZ6ciT4ZN4vJo7xxLhKXn6iU/y3cb9Jhc8ZmQApq1qK+MBLBMdk6tLuMlV/3UKxg0Cf5gXXZ5+FOG7+n0umwV2HRPcvvc7IdIQ8yw7ca2T/uMdAp8w8P+XvP1Up0dGTHPBnp/oBzi4ZjfscL0LGqftGH220aXUeJ5wBKXhCy6CpDZe5dRJJ4h+QBGcbTXsGvd0+vlFwIdMi8Df53AcVxs8xfWF7KrBFiWFanj3VEM8mSPWNUIc23nCUwoPREYjixIE0nAR07GpAaVxQvTwjCMJrinSl+nwWtOVN5kCpJLg++xadyyEByXh5YWcopar97BdKHCpKAmOOVlU1jnCERTBlQan4TuFCj1M89ARAeaDLGuQpMXMkYdig9H4+wQ7sk2UBOcwLH1fJhyBF46Bxq0F0wIGo774uPbfSY3Lk4XR9PLSIgRGSMIrkjpmlZO70y4a8IBBIDcLR+BQj2GH7MjbT13j2w39HDTZBUXwjdZOiBQFS9nwK43np6m6VMgIVLKk8YrcnWbJ3xP8m1VE2b7j/qnyRtNEnhEueH6efvhUbhg/mX7LQpIabmtPA3CqmdMXhxddUC0aZ7KmODnoVspzaJ53Vhv7JzizTL9tYzhWET5iEMrKPP1wIDKX+9/hhXaqssKHa6nxD4k6McSzRAnUdfBms0Bwe948uXUMBL8z0Nic1dth19bIY4QfSvs23i2En273uKSGewoXZ7QSNnaBEE6Vim3xaZ0wLFp2VA/hDZzTYNWUK1qbcUJ5bIrgN4ZxP3L65MjzEnnTcIbUuKvzW85cptFN6nRBmtfAhEuu4I8nqMX1Jo+Ed48k/MyMOmpl/daYdhWnhzlxZZrUmg7eliQMqfGbloWY6DpLjV/r/g7281hFWVhX8GFCW/MG67omjHC7fRfCffF5IsSzWhGEtXF5joUXPtR2TxBcZvn9Ac6XzHJfG2Ie7zip8dfWbww02uZrZdfCIvizswIJ+2DaV3Llg2Vo1NmtNIXJCzRTlT7r7DiRZfumucN28G8kwT9TaFhrnJt0ZmUxD3CA02XKQrAf3e6yWdoeDsCVoaM4d15WIITX2frneJLp3JNL2IRbeEdbx0CVU2f/vvLJMnNinywu40xn+NqehDp01p0B16epznqIr7XkyLP0v40TXsn846rZCwTO5PRyZ6tOL3phqYmSGt6dYXUe5BVSilCDvS44O89KjqsQCVdlJdEqXNiYTyBwQ5owWvP0xSz9lXWEWsFGvCtdKHB33lOwNa9PcGWrdtdGb6/S+PVCOQk23CG+lwVjKSdqGXy4raax5nqHlxZITEzjRRlX7C2ujNjYxrFjeNdJgo/Fp3ou4iNcyecPV5XpcQkr4bJm3AsuZaeAU79LtgcvyttXXwXSyprtzWj8Li9N0KNwONtoT1xm/jwSAo7ZvRTYzxFjP5k9hgrho5k9IM46RiB7zdNQo1VItzWHUB7LEsjzKAEOyuUKdTRtysV+0nsIDlPkO1w1Kz5c5Tk8OrB858Ln2O5PpOyWOzms7ye0B6iHMGY/6aYY+xzhDo8cyBq/sbRbs97T8MgV3sgUDbapsEc5STQxOfIMP+mOwAHFxKxfNjW2myO9ZV9nyBoGyhK9PaLBhXMZsm3pgtG4iw+frmqzrAUIBL896j2+OAFUMiunDgvmXi5k6CzXdIE4L+/wasWcBpfgN68zlxeKaj1YED86o3HClTqbdQ89hEvE0Y5WDiOher5w2xPXzlLl1KKVLpw+bY8ysMBrFLxTDEN4xZX6UkbvLK7uWMf2gKPQWfninWZJA4+Kox0tQ/+3nglFzzQ4wBWGXLbJ5alJNcccvjHbLLinOo3Hi2Fwidmj6b1QsENAOBVfu46CFfyawww/iS8OEdxR6O7GkYbmDSS4ob9CwU4h7ZSEP0j7Hd8/d1rYNpfBq9WlB6Z61QjXiGFB6zEY0xWBxpxqOe+QHNGI67w0rJYa9w184rVFdWncx9FsMUzgSK/9FVScC22v7T2toxqKa15Trz0MqoFWW/G5YthQbV6TPj/9nvcAGsGGfkShj7S35xuDbFLjt8UwYyy+XoznziVVxpdvBj0vcwL15m3dG22PZfZtlxA+zlecBz0fcwbVaTyew+VJz7j2QXU9yK+kDnou5hzGNQSS4Mv9CV52CWVX3x9UPpKg+BUevk5GuCnDfUhXbXPSfUOPFviijYqC9zQrK2FnD3bHPn6Vjm9WDU0Q0iX4f0GcCIO9PYILitys8mi/S5h8TzFNCPxSxI3xQ80OnjUceqj4Xfli9oFtUtp7Jh4O31Hpsg3N/P+6pGczPHr1902zS4w2caiml4V5HuLQaz732woa4v8sSfj3BQ/H6Hx4bOaPW7gMaE78+9qwQRFc0BRGXGVykXdXBy2QKFhR6PVPDw8PDw8PDw8PDw8PMRz4P0fZlvhiHROvAAAAAElFTkSuQmCC"
+             alt="co2-reduction"
+             class="w-12 h-12">
+
+        Monthly CO2 Emissions Calculator
+    </h1>
     <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">
         <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">
             🚗 Transportation
@@ -318,15 +384,15 @@
     </div>
 
     <!-- Food Consumption Card -->
-<!--    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">-->
-<!--        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">-->
-<!--            🍽️ Food Consumption-->
-<!--        </h2>-->
-<!--        <div id="foodInputs" class="space-y-4 mb-4">-->
-<!--            &lt;!&ndash; Dynamically generated food inputs will appear here &ndash;&gt;-->
-<!--        </div>-->
-<!--        <button id="addFoodBtn" class="w-full">+ Add Food Item</button>-->
-<!--    </div>-->
+    <!--    <div class="bg-white rounded-xl shadow-lg p-6 mb-6 card transform transition-all hover:scale-[1.01]">-->
+    <!--        <h2 class="text-2xl font-bold text-gray-700 mb-4 flex items-center">-->
+    <!--            🍽️ Food Consumption-->
+    <!--        </h2>-->
+    <!--        <div id="foodInputs" class="space-y-4 mb-4">-->
+    <!--            &lt;!&ndash; Dynamically generated food inputs will appear here &ndash;&gt;-->
+    <!--        </div>-->
+    <!--        <button id="addFoodBtn" class="w-full">+ Add Food Item</button>-->
+    <!--    </div>-->
 
 
     <!-- Modified Food Consumption Card -->
@@ -495,7 +561,7 @@
             input.className = 'waste-amount p-2 border rounded-lg focus:ring-2 focus:ring-blue-400';
             // input.placeholder = 'kg';
             input.min = '0';
-            input.step = '0.1';
+            input.step = '0.5';
             input.inputMode = 'numeric';
             input.pattern = '[0-9]*';
 
@@ -779,114 +845,159 @@
     }
 
     const foodEmissions = {
-            beef: { label: 'Beef', emissions: 27 },
-            lamb: { label: 'Lamb', emissions: 39 },
-            cheese: { label: 'Cheese', emissions: 13.5 },
-            // pork: { label: 'Pork', emissions: 12 },
-            turkey: { label: 'Turkey', emissions: 10.9 },
-            chicken: { label: 'Chicken', emissions: 6.9 },
-            tuna: { label: 'Tuna', emissions: 6.1 },
-            eggs: { label: 'Eggs', emissions: 4.8 },
-            potatoes: { label: 'Potatoes', emissions: 2.9 },
-            rice: { label: 'Rice', emissions: 4.5 },
-            nuts: { label: 'Nuts', emissions: 0.43 },
-            vegetables: { label: 'Vegetables', emissions: 2 },
-            lentils: { label: 'Lentils', emissions: 0.9 },
-            tofu: { label: 'Tofu', emissions: 2 }
-        };
+        beef: {label: 'Beef', emissions: 27},
+        lamb: {label: 'Lamb', emissions: 39},
+        cheese: {label: 'Cheese', emissions: 13.5},
+        // pork: { label: 'Pork', emissions: 12 },
+        turkey: {label: 'Turkey', emissions: 10.9},
+        chicken: {label: 'Chicken', emissions: 6.9},
+        tuna: {label: 'Tuna', emissions: 6.1},
+        eggs: {label: 'Eggs', emissions: 4.8},
+        potatoes: {label: 'Potatoes', emissions: 2.9},
+        rice: {label: 'Rice', emissions: 4.5},
+        nuts: {label: 'Nuts', emissions: 0.43},
+        vegetables: {label: 'Vegetables', emissions: 2},
+        lentils: {label: 'Lentils', emissions: 0.9},
+        tofu: {label: 'Tofu', emissions: 2}
+    };
 
-        // Generate food checkboxes
-        function initializeFoodSection() {
-            const container = document.getElementById('foodCheckboxes');
+    // Generate food checkboxes
+    // function initializeFoodSection() {
+    //     const container = document.getElementById('foodCheckboxes');
+    //
+    //     Object.entries(foodEmissions).forEach(([key, value]) => {
+    //         const div = document.createElement('div');
+    //         div.className = 'food-item';
+    //
+    //         div.innerHTML = `
+    //                 <input type="checkbox" id="food-${key}" name="food" value="${key}">
+    //                 <label for="food-${key}">${value.label}</label>
+    //                 <div class="food-info">
+    //                     ℹ️
+    //                     <span class="food-tooltip">${value.emissions} kg CO2/kg</span>
+    //                 </div>
+    //             `;
+    //
+    //         container.appendChild(div);
+    //     });
+    //
+    //     // Add event listeners to all checkboxes
+    //     document.querySelectorAll('input[name="food"]').forEach(checkbox => {
+    //         checkbox.addEventListener('change', updateFoodSelection);
+    //     });
+    // }
 
-            Object.entries(foodEmissions).forEach(([key, value]) => {
-                const div = document.createElement('div');
-                div.className = 'food-item';
+function initializeFoodSection() {
+    const container = document.getElementById('foodCheckboxes');
 
-                div.innerHTML = `
-                    <input type="checkbox" id="food-${key}" name="food" value="${key}">
-                    <label for="food-${key}">${value.label}</label>
-                    <div class="food-info">
-                        ℹ️
-                        <span class="food-tooltip">${value.emissions} kg CO2/kg</span>
-                    </div>
-                `;
+    Object.entries(foodEmissions).forEach(([key, value]) => {
+        const div = document.createElement('div');
+        div.className = 'food-item';
+        div.setAttribute('data-key', key);
 
-                container.appendChild(div);
-            });
+        div.innerHTML = `
+            <input type="checkbox" id="food-${key}" name="food" value="${key}" hidden>
+            <label for="food-${key}" class="food-label">
+                ${value.label}
+                <div class="food-info">ℹ️
+                    <span class="food-tooltip">${value.emissions} kg CO2/kg</span>
+                </div>
+            </label>
+        `;
 
-            // Add event listeners to all checkboxes
-            document.querySelectorAll('input[name="food"]').forEach(checkbox => {
-                checkbox.addEventListener('change', updateFoodSelection);
-            });
+        // Click event to toggle checkbox and apply selection styling
+        div.addEventListener('click', function () {
+            const checkbox = div.querySelector('input[type="checkbox"]');
+            checkbox.checked = !checkbox.checked;
+            updateSelectionStyles(div, checkbox.checked);
+            updateFoodSelection();
+        });
+
+        // Ensure initial state is applied if needed
+        const checkbox = div.querySelector('input[type="checkbox"]');
+        checkbox.addEventListener('change', function () {
+            updateSelectionStyles(div, checkbox.checked);
+        });
+
+        container.appendChild(div);
+    });
+
+    function updateSelectionStyles(element, isSelected) {
+        if (isSelected) {
+            element.classList.add('selected');
+        } else {
+            element.classList.remove('selected');
+        }
+    }
+}
+
+
+    // Update food selection display
+    function updateFoodSelection() {
+        const selectedCheckboxes = document.querySelectorAll('input[name="food"]:checked');
+        const selectedFoodsSpan = document.getElementById('selectedFoods');
+        const distributionSpan = document.getElementById('foodDistribution');
+
+        if (selectedCheckboxes.length === 0) {
+            selectedFoodsSpan.textContent = 'None';
+            distributionSpan.textContent = '0 kg per selection';
+            return;
         }
 
-        // Update food selection display
-        function updateFoodSelection() {
-            const selectedCheckboxes = document.querySelectorAll('input[name="food"]:checked');
-            const selectedFoodsSpan = document.getElementById('selectedFoods');
-            const distributionSpan = document.getElementById('foodDistribution');
+        const foodNames = Array.from(selectedCheckboxes).map(cb =>
+            foodEmissions[cb.value].label
+        );
 
-            if (selectedCheckboxes.length === 0) {
-                selectedFoodsSpan.textContent = 'None';
-                distributionSpan.textContent = '0 kg per selection';
-                return;
-            }
+        const kgPerFood = (45 / selectedCheckboxes.length).toFixed(2);
 
-            const foodNames = Array.from(selectedCheckboxes).map(cb =>
-                foodEmissions[cb.value].label
-            );
+        selectedFoodsSpan.textContent = foodNames.join(', ');
+        distributionSpan.textContent = `${kgPerFood} kg per selection`;
+    }
 
-            const kgPerFood = (45 / selectedCheckboxes.length).toFixed(2);
+    // Calculate food emissions
+    function calculateFoodEmissions() {
+        const selectedFoods = document.querySelectorAll('input[name="food"]:checked');
+        const numSelected = selectedFoods.length;
 
-            selectedFoodsSpan.textContent = foodNames.join(', ');
-            distributionSpan.textContent = `${kgPerFood} kg per selection`;
-        }
+        if (numSelected === 0) return 0;
 
-        // Calculate food emissions
-        function calculateFoodEmissions() {
-            const selectedFoods = document.querySelectorAll('input[name="food"]:checked');
-            const numSelected = selectedFoods.length;
+        const kgPerFood = 45 / numSelected;
 
-            if (numSelected === 0) return 0;
+        let totalEmissions = 0;
+        selectedFoods.forEach(food => {
+            const emissionsFactor = foodEmissions[food.value].emissions;
+            totalEmissions += emissionsFactor * kgPerFood;
+        });
 
-            const kgPerFood = 45 / numSelected;
+        return totalEmissions / 30;
+    }
 
-            let totalEmissions = 0;
-            selectedFoods.forEach(food => {
-                const emissionsFactor = foodEmissions[food.value].emissions;
-                totalEmissions += emissionsFactor * kgPerFood;
-            });
+    // Initialize the food section when the page loads
+    window.onload = function () {
+        initializeFoodSection();
+        initializeWasteInputs()
 
-            return totalEmissions/30;
-        }
+    };
 
-        // Initialize the food section when the page loads
-        window.onload = function() {
-            initializeFoodSection();
-            initializeWasteInputs()
+    // Update the original calculateEmissions function to use the new food calculation
+    function calculateEmissions() {
+        const transportEmissions = calculateTransportEmissions();
+        const electricityEmissions = calculateElectricityEmissions();
+        const waterEmissions = calculateWaterEmissions();
+        const foodEmissions = calculateFoodEmissions();
+        const wasteEmissions = calculateWasteEmissions();
 
-        };
+        const totalEmissions = transportEmissions + electricityEmissions +
+            waterEmissions + foodEmissions + wasteEmissions;
 
-        // Update the original calculateEmissions function to use the new food calculation
-        function calculateEmissions() {
-            const transportEmissions = calculateTransportEmissions();
-            const electricityEmissions = calculateElectricityEmissions();
-            const waterEmissions = calculateWaterEmissions();
-            const foodEmissions = calculateFoodEmissions();
-            const wasteEmissions = calculateWasteEmissions();
-
-            const totalEmissions = transportEmissions + electricityEmissions +
-                                 waterEmissions + foodEmissions + wasteEmissions;
-
-            displayResults({
-                Transport: transportEmissions,
-                Electricity: electricityEmissions,
-                Water: waterEmissions,
-                Food: foodEmissions,
-                Waste: wasteEmissions
-            }, totalEmissions);
-        }
+        displayResults({
+            Transport: transportEmissions,
+            Electricity: electricityEmissions,
+            Water: waterEmissions,
+            Food: foodEmissions,
+            Waste: wasteEmissions
+        }, totalEmissions);
+    }
 
 </script>
 </body>
