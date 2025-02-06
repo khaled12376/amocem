@@ -634,7 +634,7 @@
         const isNewCar = document.getElementById('carAge').checked;
         const factor = isNewCar ? 6.6666 : 6.25;
 
-        return distance * factor * emissions.transport[fuelType];
+        return distance / 100 * factor * emissions.transport[fuelType];
 
     }
 
