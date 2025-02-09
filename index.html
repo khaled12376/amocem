@@ -632,7 +632,7 @@
         const fuelType = document.getElementById('fuelType').value;
         const distance = parseFloat(document.getElementById('distance').value) || 0;
         const isNewCar = document.getElementById('carAge').checked;
-        const factor = isNewCar ? 6.6666 : 6.25;
+        const factor = isNewCar ? 10 : 7;
 
         return distance / 100 * factor * emissions.transport[fuelType];
 
