@@ -948,7 +948,7 @@
             foodEmissions[cb.value].label
         );
 
-        const kgPerFood = (45 / selectedCheckboxes.length).toFixed(2);
+        const kgPerFood = (35 / selectedCheckboxes.length).toFixed(2);
 
         selectedFoodsSpan.textContent = foodNames.join(', ');
         distributionSpan.textContent = `${kgPerFood} kg per selection`;
@@ -961,7 +961,7 @@
 
         if (numSelected === 0) return 0;
 
-        const kgPerFood = 30 / numSelected;
+        const kgPerFood = 35 / numSelected;
 
         let totalEmissions = 0;
         selectedFoods.forEach(food => {
