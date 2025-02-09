@@ -759,9 +759,9 @@
 
     function getEmissionsRating(total) {
         // Adjusted thresholds for monthly values (multiplied by 30)
-        if (total < 600) {
+        if (total < 500) {
             return {emoji: '🌱', description: 'Eco Champion!'};
-        } else if (total < 660) {
+        } else if (total < 600) {
             return {emoji: '🍃', description: 'Green Living'};
         } else if (total < 750) {
             return {emoji: '🌍', description: 'Average Impact <br> Keep Reducing'};
@@ -961,7 +961,7 @@
 
         if (numSelected === 0) return 0;
 
-        const kgPerFood = 45 / numSelected;
+        const kgPerFood = 30 / numSelected;
 
         let totalEmissions = 0;
         selectedFoods.forEach(food => {
